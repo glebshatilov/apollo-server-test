@@ -136,19 +136,20 @@ const typeDefs = gql`
   # A book has a title and author
   type Book {
     title: String!
-    author: Person!
+    author: Author!
   }
 
   # An author has a name
-#  type Author {
-#    name: String!
-#  }
+  type Author {
+    name: String!
+  }
 
   # Queries can fetch a list of libraries
   type Query {
     libraries: [Library]
     books(author: String): [Book]
     banner(id: ID!): Banner
+    search: [SearchResult]
   }
 
   type Banner {
@@ -185,7 +186,7 @@ const typeDefs = gql`
     school: String!
   }
 
-  union Person = Adult | Child
+  union SearchResult = Book | Author
 `;
 
 // A map of functions which return data for the schema.
@@ -201,7 +202,22 @@ const resolvers = {
       console.log('args', args)
       console.log('banners', banners)
       return banners.find(banner => banner.id === Number(args.id))
+    },
+    search() {
+      return books
     }
+  },
+
+  SearchResult: {
+    __resolveType(obj){
+      if(obj.name){
+        return 'Author';
+      }
+      if(obj.title){
+        return 'Book';
+      }
+      return null; // GraphQLError is thrown
+    },
   },
   Banner: {
     items(parent) {
