@@ -1,0 +1,9 @@
+type Mutation {
+  createArticle(
+    email: String!
+    password: String!
+    firstName: String!
+    lastName: String!
+    last2Name: String!
+  ): Article
+}
