@@ -1,9 +1,6 @@
 type Mutation {
-  createUser(
+  register(
     email: String!
-    password: String!
-    firstName: String!
-    lastName: String!
-    last2Name: String!
+    name: String!
   ): User
 }

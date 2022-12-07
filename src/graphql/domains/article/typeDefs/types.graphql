@@ -1,4 +1,6 @@
 type Article {
   id: ID!
-  name: String
+  title: String!
+  text: String!
+  author: User!
 }

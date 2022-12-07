@@ -18,3 +18,14 @@ export async function makeSchemaForDomain(fileUrl) {
     typeDefs: mergeTypeDefs(typeDefsArray)
   })
 }
+
+export async function makeFullSchema(fileUrl) {
+  const resolversArray = await loadFiles(path.join(dirnameByFileUrl(fileUrl), './domains/**/resolvers/*.{js,ts}'), { ignoreIndex: true })
+  const typeDefsArray = await loadFiles(path.join(dirnameByFileUrl(fileUrl), './domains/**/typeDefs/*.graphql'), { ignoreIndex: true })
+
+
+  return makeExecutableSchema({
+    resolvers: mergeResolvers(resolversArray),
+    typeDefs: mergeTypeDefs(typeDefsArray)
+  })
+}

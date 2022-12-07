@@ -1,9 +1,11 @@
 type Mutation {
-  createArticle(
-    email: String!
-    password: String!
-    firstName: String!
-    lastName: String!
-    last2Name: String!
+  article: ArticleMutations
+}
+
+type ArticleMutations {
+  create(
+    title: String!
+    text: String!
+    authorId: String!
   ): Article
 }
