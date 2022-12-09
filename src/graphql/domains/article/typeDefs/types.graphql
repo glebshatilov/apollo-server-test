@@ -3,4 +3,6 @@ type Article {
   title: String!
   text: String!
   author: User!
+  createdAt: DateTime!
+  updatedAt: DateTime!
 }

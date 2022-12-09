@@ -37,8 +37,6 @@ export default class ArticleService {
 
       const [ article ] = res.records
 
-      console.log('res', res)
-
       return toNativeTypes(article.get('article'))
     } catch (e) {
       console.log('ArticleServiceError', e)
@@ -64,8 +62,6 @@ export default class ArticleService {
         }
         )
       )
-
-      console.log('res.records', res.records)
 
       const articles = res.records.map(
         row => toNativeTypes(row.get('article'))
