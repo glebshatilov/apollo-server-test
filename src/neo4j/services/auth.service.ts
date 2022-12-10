@@ -1,7 +1,4 @@
-// import jwt from 'jsonwebtoken'
-// import { hash, compare } from 'bcrypt'
 // import ValidationError from '../errors/validation.error.js'
-// import { JWT_SECRET, SALT_ROUNDS } from '../constants.js'
 
 export default class AuthService {
 
@@ -11,9 +8,8 @@ export default class AuthService {
     this.driver = driver
   }
 
-  async register(email, name) {
+  async createUser(email, password) {
     const session = this.driver.session()
-    // const encrypted = await hash(plainPassword, parseInt(SALT_ROUNDS))
 
     try {
       const res = await session.executeWrite(
@@ -22,7 +18,7 @@ export default class AuthService {
         CREATE (u:User {
           id: randomUuid(),
           email: $email,
-          name: $name,
+          password: $password,
           createdAt: datetime(),
           updatedAt: datetime()
         })
@@ -30,7 +26,7 @@ export default class AuthService {
       `,
           {
             email,
-            name
+            password
           }
         )
       )
@@ -54,11 +50,34 @@ export default class AuthService {
         // )
       }
 
-      console.log('erroreqweqweq', e)
       throw e
     }
 
     finally {
+      await session.close()
+    }
+  }
+
+  async getUserByEmail(email) {
+    const session = this.driver.session()
+
+    try {
+      const res = await session.executeRead(tx => tx.run(
+        `
+        MATCH (u:User { email: $email })
+        RETURN u { .* } AS user
+        `,
+        { email }
+      ))
+
+      if (res.records.length === 0) {
+        return null
+      }
+
+      return res.records[0].get('user')
+    } catch (e) {
+
+    } finally {
       await session.close()
     }
   }

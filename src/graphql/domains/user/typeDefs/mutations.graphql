@@ -1,6 +1,0 @@
-type Mutation {
-  register(
-    email: String!
-    name: String!
-  ): User
-}

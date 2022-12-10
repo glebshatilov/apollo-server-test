@@ -1,0 +1,23 @@
+type Mutation {
+  auth: AuthMutations
+}
+
+type AuthMutations {
+  signUp(
+    email: String!
+    password: String!
+  ): AuthMutationResponse!
+
+  signIn(
+    email: String!
+    password: String!
+  ): AuthMutationResponse!
+}
+
+type AuthMutationResponse implements MutationResponse {
+  code: String!
+  success: Boolean!
+  message: String!
+  user: User
+  token: String
+}
