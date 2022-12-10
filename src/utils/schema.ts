@@ -20,8 +20,15 @@ export async function makeSchemaForDomain(fileUrl) {
 }
 
 export async function makeFullSchema(fileUrl) {
-  const resolversArray = await loadFiles(path.join(dirnameByFileUrl(fileUrl), './{domains,common}/**/resolvers/*.{js,ts}'), { ignoreIndex: true })
-  const typeDefsArray = await loadFiles(path.join(dirnameByFileUrl(fileUrl), './{domains,common}/**/typeDefs/*.graphql'), { ignoreIndex: true })
+  const resolversArray = await loadFiles([
+    path.join(dirnameByFileUrl(fileUrl), './domains/!(_default)/**/resolvers/*.{js,ts}'), // load all resolvers from domains except _default
+    path.join(dirnameByFileUrl(fileUrl), './common/**/resolvers/*.{js,ts}'), // load all resolvers from common folder
+  ], { ignoreIndex: true })
+
+  const typeDefsArray = await loadFiles([
+    path.join(dirnameByFileUrl(fileUrl), './domains/!(_default)/**/typeDefs/*.graphql'), // load all typeDefs from domains except _default
+    path.join(dirnameByFileUrl(fileUrl), './common/**/typeDefs/*.graphql'), // load all typeDefs from common folder
+  ], { ignoreIndex: true })
 
   return makeExecutableSchema({
     resolvers: mergeResolvers(resolversArray),
