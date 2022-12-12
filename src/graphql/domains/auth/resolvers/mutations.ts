@@ -5,8 +5,8 @@ import { AuthPasswordError, EmailAlreadyTakenError, AlreadyLoggedInError } from 
 export default {
   Mutation: {
     auth: async () => ({
-      signUp: async ({ email, password }, { neo4jDriver, user }) => {
-        if (user?.id) throw new AlreadyLoggedInError()
+      signUp: async ({ email, password }, { neo4jDriver, authUser }) => {
+        if (authUser?.id) throw new AlreadyLoggedInError()
 
         const neo4jAuthService = new Neo4jAuthService(neo4jDriver)
         const authService = new AuthService()
@@ -32,28 +32,28 @@ export default {
           }
         }
       },
-      signIn: async ({ email, password }, { neo4jDriver, user }) => {
-        if (user?.id) throw new AlreadyLoggedInError()
+      signIn: async ({ email, password }, { neo4jDriver, authUser }) => {
+        if (authUser?.id) throw new AlreadyLoggedInError()
 
         const neo4jAuthService = new Neo4jAuthService(neo4jDriver)
         const authService = new AuthService()
 
-        const userData = await neo4jAuthService.getUserByEmail(email)
+        const user = await neo4jAuthService.getUserByEmail(email)
 
-        const encryptedPassword = userData.password
+        const encryptedPassword = user.password
 
         const isCorrestPassword = await authService.comparePasswords(password, encryptedPassword)
 
         if (!isCorrestPassword) throw new AuthPasswordError()
 
         const jwtToken = authService.makeJwt({
-          id: userData.id
+          id: user.id
         })
 
         return {
           code: '200',
           success: true,
-          user: userData,
+          user,
           token: jwtToken
         }
       }
