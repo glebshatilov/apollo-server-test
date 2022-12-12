@@ -39,3 +39,13 @@ export class AlreadyLoggedInError extends GraphQLError {
     })
   }
 }
+
+export class UnauthorizedError extends GraphQLError {
+  constructor() {
+    super('You have to be logged in.', {
+      extensions: {
+        code: 'UNAUTHORIZED'
+      }
+    })
+  }
+}
