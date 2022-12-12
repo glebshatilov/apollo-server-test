@@ -6,6 +6,5 @@ type ArticleMutations {
   create(
     title: String!
     text: String!
-    authorId: String!
   ): Article
 }

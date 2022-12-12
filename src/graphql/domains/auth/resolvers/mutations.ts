@@ -1,4 +1,4 @@
-import Neo4jAuthService from '../../../../neo4j/services/auth.service.js'
+import Neo4jUserService from '../../../../neo4j/services/user.service.js'
 import AuthService from '../../../services/auth.service.js'
 import { AuthPasswordError, EmailAlreadyTakenError, AlreadyLoggedInError } from '../../../errors/auth.error.js'
 
@@ -8,13 +8,13 @@ export default {
       signUp: async ({ email, password }, { neo4jDriver, authUser }) => {
         if (authUser?.id) throw new AlreadyLoggedInError()
 
-        const neo4jAuthService = new Neo4jAuthService(neo4jDriver)
+        const neo4jUserService = new Neo4jUserService(neo4jDriver)
         const authService = new AuthService()
 
         const encryptedPassword = await authService.hashPassword(password)
 
         try {
-          const newUser = await neo4jAuthService.createUser(email, encryptedPassword)
+          const newUser = await neo4jUserService.createUser(email, encryptedPassword)
 
           const jwtToken = authService.makeJwt({
             id: newUser.id
@@ -35,10 +35,10 @@ export default {
       signIn: async ({ email, password }, { neo4jDriver, authUser }) => {
         if (authUser?.id) throw new AlreadyLoggedInError()
 
-        const neo4jAuthService = new Neo4jAuthService(neo4jDriver)
+        const neo4jUserService = new Neo4jUserService(neo4jDriver)
         const authService = new AuthService()
 
-        const user = await neo4jAuthService.getUserByEmail(email)
+        const user = await neo4jUserService.getUserByEmail(email)
 
         const encryptedPassword = user.password
 
