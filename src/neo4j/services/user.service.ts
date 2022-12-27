@@ -82,6 +82,32 @@ export default class Neo4jUserService {
     }
   }
 
+  async updateUserInfo(userId, data) {
+    const session = this.driver.session()
+
+    try {
+      const res = await session.executeWrite(tx => tx.run(
+        `
+        MATCH (u:User { id: $userId })
+        SET u += $data
+        SET u.updatedAt = datetime()
+        RETURN u { .* } AS user
+        `,
+        { userId, data }
+      ))
+
+      if (res.records.length === 0) {
+        return null
+      }
+
+      return res.records[0].get('user')
+    } catch (e) {
+      console.log('error', e)
+    } finally {
+      await session.close()
+    }
+  }
+
   async getAll() {
     const session = this.driver.session()
 
