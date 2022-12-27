@@ -135,6 +135,60 @@ export default class Neo4jUserService {
     }
   }
 
+  async getFollowersList(userId: string) {
+    const session = this.driver.session()
+
+    try {
+      const res = await session.executeRead(tx => tx.run(
+        `
+        MATCH (f:User)-[:FOLLOWING]->(u: User { id: $userId })
+
+        RETURN u {
+        .*
+        } AS user
+        `,
+        { userId }
+      ))
+
+      const users = res.records.map(
+        row => toNativeTypes(row.get('user'))
+      )
+
+      return users
+    } catch (e) {
+      console.error('getFollowersListError', e)
+    } finally {
+      await session.close()
+    }
+  }
+
+  async getFollowingList(userId: string) {
+    const session = this.driver.session()
+
+    try {
+      const res = await session.executeRead(tx => tx.run(
+        `
+        MATCH (f:User { id: $userId })-[:FOLLOWING]->(u:User)
+
+        RETURN u {
+        .*
+        } AS user
+        `,
+        { userId }
+      ))
+
+      const users = res.records.map(
+        row => toNativeTypes(row.get('user'))
+      )
+
+      return users
+    } catch (e) {
+      console.error('getFollowingListError', e)
+    } finally {
+      await session.close()
+    }
+  }
+
   async getAll() {
     const session = this.driver.session()
 
