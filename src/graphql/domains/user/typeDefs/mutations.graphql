@@ -6,6 +6,10 @@ type UserMutations {
   updateInfo(
     data: UserInfoDataInput!
   ): UserMutationResponse!
+
+  startFollowing(
+    userId: ID!
+  ): UserMutationResponse!
 }
 
 input UserInfoDataInput {

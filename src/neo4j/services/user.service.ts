@@ -108,6 +108,33 @@ export default class Neo4jUserService {
     }
   }
 
+  async addFollower(userId: string, followerId: string) {
+    const session = this.driver.session()
+
+    try {
+      const res = await session.executeWrite(tx => tx.run(
+        `
+        MATCH (f:User { id: $followerId }), (u:User { id: $userId })
+
+        MERGE (f)-[:FOLLOWING]->(u)
+
+        RETURN f { .* } AS user
+        `,
+        { userId, followerId }
+      ))
+
+      if (res.records.length === 0) {
+        return null
+      }
+
+      return res.records[0].get('user')
+    } catch (e) {
+      console.log('addFollowerError', e)
+    } finally {
+      await session.close()
+    }
+  }
+
   async getAll() {
     const session = this.driver.session()
 
