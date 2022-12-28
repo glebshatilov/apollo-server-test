@@ -29,6 +29,19 @@ export default {
           success: true,
           user
         }
+      },
+      stopFollowing: async ({ userId }, { neo4jDriver, authUser }) => {
+        if (!authUser?.id) throw new UnauthorizedError()
+
+        const neo4jUserService = new Neo4jUserService(neo4jDriver)
+
+        const user = await neo4jUserService.removeFollower(userId, authUser.id)
+
+        return {
+          code: '200',
+          success: true,
+          user
+        }
       }
     })
   }

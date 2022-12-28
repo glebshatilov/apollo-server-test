@@ -10,6 +10,10 @@ type UserMutations {
   startFollowing(
     userId: ID!
   ): UserMutationResponse!
+
+  stopFollowing(
+    userId: ID!
+  ): UserMutationResponse!
 }
 
 input UserInfoDataInput {

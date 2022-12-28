@@ -116,7 +116,7 @@ export default class Neo4jUserService {
         `
         MATCH (f:User { id: $followerId }), (u:User { id: $userId })
 
-        MERGE (f)-[:FOLLOWING]->(u)
+        MERGE (f)-[:FOLLOWING { createdAt: datetime() }]->(u)
 
         RETURN f { .* } AS user
         `,
@@ -130,6 +130,33 @@ export default class Neo4jUserService {
       return res.records[0].get('user')
     } catch (e) {
       console.log('addFollowerError', e)
+    } finally {
+      await session.close()
+    }
+  }
+
+  async removeFollower(userId: string, followerId: string) {
+    const session = this.driver.session()
+
+    try {
+      const res = await session.executeWrite(tx => tx.run(
+        `
+        MATCH (f:User { id: $followerId })-[r:FOLLOWING]->(u:User { id: $userId })
+
+        DELETE r
+
+        RETURN f { .* } AS user
+        `,
+        { userId, followerId }
+      ))
+
+      if (res.records.length === 0) {
+        return null
+      }
+
+      return res.records[0].get('user')
+    } catch (e) {
+      console.log('removeFollowerError', e)
     } finally {
       await session.close()
     }
