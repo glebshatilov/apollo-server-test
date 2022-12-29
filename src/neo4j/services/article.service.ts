@@ -1,5 +1,4 @@
 import { toNativeTypes } from '../utils.js'
-import { int } from 'neo4j-driver'
 
 export default class Neo4jArticleService {
 

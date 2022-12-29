@@ -1,13 +1,13 @@
-import ArticleService from '../../../../neo4j/services/article.service.js'
+import Neo4jArticleService from '../../../../neo4j/services/article.service.js'
 import Neo4jUserService from '../../../../neo4j/services/user.service.js'
 
 export default {
   User: {
     articles: async (parent, args, { neo4jDriver }) => {
-      const articleService = new ArticleService(neo4jDriver)
+      const neo4jArticleService = new Neo4jArticleService(neo4jDriver)
 
       const authorId = parent.id
-      const articles = await articleService.getAllByAuthor(authorId)
+      const articles = await neo4jArticleService.getAllByAuthor(authorId)
 
       return articles
     },
