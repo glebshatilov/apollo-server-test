@@ -106,4 +106,66 @@ export default class Neo4jArticleService {
       await session.close()
     }
   }
+
+  async addLike(articleId: string, userId:string) {
+    const session = this.driver.session()
+
+    try {
+      const res = await session.executeWrite(tx => tx.run(
+        `
+        MATCH (u:User { id: $userId }), (a:Article { id: $articleId })
+
+        MERGE (u)-[r:LIKES]->(a)
+        ON CREATE
+        SET r.createdAt = datetime()
+
+        RETURN a { .* } AS article
+        `,
+        {
+          userId,
+          articleId
+        }
+      ))
+
+      if (res.records.length === 0) {
+        return null // ToDo: error, can't find article with provided id
+      }
+
+      return res.records[0].get('article')
+    } catch (e) {
+      console.error('addLikeError', e)
+    } finally {
+      await session.close()
+    }
+  }
+
+  async removeLike(articleId: string, userId:string) {
+    const session = this.driver.session()
+
+    try {
+      const res = await session.executeWrite(tx => tx.run(
+        `
+        MATCH (u:User { id: $userId })-[r:LIKES]->(a:Article { id: $articleId })
+
+        DELETE r
+
+        RETURN a { .* } AS article
+        `,
+        {
+          userId,
+          articleId
+        }
+      ))
+
+      if (res.records.length === 0) {
+        return null
+      }
+
+      return res.records[0].get('article')
+    } catch (e) {
+      console.error('addLikeError', e)
+    } finally {
+      await session.close()
+    }
+  }
 }

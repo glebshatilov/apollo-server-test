@@ -7,4 +7,10 @@ type ArticleMutations {
     title: String!
     text: String!
   ): Article
+  like(
+    articleId: ID!
+  ): Article
+  removeLike(
+    articleId: ID!
+  ): Article
 }

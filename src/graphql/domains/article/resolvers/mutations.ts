@@ -12,7 +12,25 @@ export default {
         const article = await neo4jArticleService.add(title, text, authUser.id)
 
         return article
-      }
+      },
+      like: async ({ articleId }, { neo4jDriver, authUser }) => {
+        if (!authUser?.id) throw new UnauthorizedError()
+
+        const neo4jArticleService = new Neo4jArticleService(neo4jDriver)
+
+        const article = await neo4jArticleService.addLike(articleId, authUser.id)
+
+        return article
+      },
+      removeLike: async ({ articleId }, { neo4jDriver, authUser }) => {
+        if (!authUser?.id) throw new UnauthorizedError()
+
+        const neo4jArticleService = new Neo4jArticleService(neo4jDriver)
+
+        const article = await neo4jArticleService.removeLike(articleId, authUser.id)
+
+        return article
+      },
     })
   }
 }
