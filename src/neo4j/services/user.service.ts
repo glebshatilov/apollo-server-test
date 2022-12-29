@@ -116,7 +116,9 @@ export default class Neo4jUserService {
         `
         MATCH (f:User { id: $followerId }), (u:User { id: $userId })
 
-        MERGE (f)-[:FOLLOWING { createdAt: datetime() }]->(u)
+        MERGE (f)-[r:FOLLOWING]->(u)
+        ON CREATE
+        SET r.createdAt = datetime()
 
         RETURN f { .* } AS user
         `,
