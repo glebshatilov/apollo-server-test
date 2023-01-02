@@ -4,7 +4,7 @@ import AuthService from './services/auth.service.js'
 
 const neo4jDriver = await initDriver(NEO4J_URI, NEO4J_USERNAME, NEO4J_PASSWORD)
 
-const context = async ({ req }) => {
+export const getDynamicContext = async (req) => {
   const authService = new AuthService()
 
   return {
@@ -12,5 +12,3 @@ const context = async ({ req }) => {
     neo4jDriver
   }
 }
-
-export default context
