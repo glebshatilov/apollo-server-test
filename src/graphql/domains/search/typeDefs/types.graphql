@@ -1,0 +1,7 @@
+type Search {
+  users(query: String!): UserSearch!
+}
+
+type UserSearch {
+  list: [User!]!
+}

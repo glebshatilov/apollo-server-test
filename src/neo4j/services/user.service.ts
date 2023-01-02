@@ -85,6 +85,11 @@ export default class Neo4jUserService {
   async updateUserInfo(userId, data) {
     const session = this.driver.session()
 
+    const modifiedData = {
+      ...data,
+      ...(!!data.name && { lowerCaseName: data.name.toLowerCase() }) // add property lowerCaseName
+    }
+
     try {
       const res = await session.executeWrite(tx => tx.run(
         `
@@ -93,7 +98,7 @@ export default class Neo4jUserService {
         SET u.updatedAt = datetime()
         RETURN u { .* } AS user
         `,
-        { userId, data }
+        { userId, data: modifiedData }
       ))
 
       if (res.records.length === 0) {
@@ -240,6 +245,35 @@ export default class Neo4jUserService {
     } catch (e) {
       console.log('UserServiceError', e)
       throw e
+    } finally {
+      await session.close()
+    }
+  }
+
+  async findUsersByQuery(query: string) {
+    const session = this.driver.session()
+
+    try {
+      const res = await session.executeRead(tx => tx.run(
+        `
+        WITH toLower($query) AS lowerCaseQuery
+        MATCH (u:User)
+        WHERE u.username CONTAINS lowerCaseQuery
+          OR u.lowerCaseName CONTAINS lowerCaseQuery
+
+        RETURN u { .* } AS user
+        `,
+        { query }
+      ))
+
+      const users = res.records.map(
+        row => toNativeTypes(row.get('user'))
+      )
+
+      return users
+
+    } catch (e) {
+      console.error('findUsersByQueryError', e)
     } finally {
       await session.close()
     }
