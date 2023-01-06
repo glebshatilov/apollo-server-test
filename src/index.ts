@@ -15,6 +15,7 @@ await apolloServer.start()
 // GraphQL SSE for Subscriptions
 app.use(
   '/graphql/stream',
+  cors(),
   createHandler({
     schema,
     context: async (req) => getDynamicContext(req)
