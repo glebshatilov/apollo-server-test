@@ -10,6 +10,16 @@ export class AuthPasswordError extends GraphQLError {
   }
 }
 
+export class AuthEmailError extends GraphQLError {
+  constructor(email: string) {
+    super(`No users with email ${email}.`, {
+      extensions: {
+        code: 'UNAUTHORIZED'
+      }
+    })
+  }
+}
+
 export class EmailAlreadyTakenError extends GraphQLError {
   constructor(email: string) {
     super(`An account already exists with the email address ${email}`, {

@@ -1,6 +1,6 @@
 import Neo4jUserService from '../../../../neo4j/services/user.service.js'
 import AuthService from '../../../services/auth.service.js'
-import { AuthPasswordError, EmailAlreadyTakenError, AlreadyLoggedInError } from '../../../errors/auth.error.js'
+import { AuthPasswordError, EmailAlreadyTakenError, AlreadyLoggedInError, AuthEmailError } from '../../../errors/auth.error.js'
 
 export default {
   Mutation: {
@@ -40,11 +40,13 @@ export default {
 
         const user = await neo4jUserService.getUserByEmail(email)
 
+        if (!user) throw new AuthEmailError(email)
+
         const encryptedPassword = user.password
 
-        const isCorrestPassword = await authService.comparePasswords(password, encryptedPassword)
+        const isCorrectPassword = await authService.comparePasswords(password, encryptedPassword)
 
-        if (!isCorrestPassword) throw new AuthPasswordError()
+        if (!isCorrectPassword) throw new AuthPasswordError()
 
         const jwtToken = authService.makeJwt({
           id: user.id
