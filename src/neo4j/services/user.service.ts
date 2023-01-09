@@ -58,6 +58,30 @@ export default class Neo4jUserService {
     }
   }
 
+  async getUserById(id: string) {
+    const session = this.driver.session()
+
+    try {
+      const res = await session.executeRead(tx => tx.run(
+        `
+        MATCH (u:User { id: $id })
+        RETURN u { .* } AS user
+        `,
+        { id }
+      ))
+
+      if (res.records.length === 0) {
+        return null
+      }
+
+      return res.records[0].get('user')
+    } catch (e) {
+
+    } finally {
+      await session.close()
+    }
+  }
+
   async getUserByEmail(email) {
     const session = this.driver.session()
 
