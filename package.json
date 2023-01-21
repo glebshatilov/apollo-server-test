@@ -5,6 +5,7 @@
   "main": "index.js",
   "type": "module",
   "scripts": {
+    "preinstall": "npx only-allow pnpm",
     "copy-graphql-files": "copyfiles -u 1 ./src/**/*.graphql dist",
     "compile": "rm -rf dist/ && tsc && npm run copy-graphql-files",
     "start": "npm run compile && node ./dist/index.js"
