@@ -1,13 +1,8 @@
 import path from 'path'
-import { fileURLToPath } from 'url';
 import { mergeResolvers, mergeTypeDefs } from '@graphql-tools/merge'
 import { makeExecutableSchema } from '@graphql-tools/schema'
 import { loadFiles } from '@graphql-tools/load-files'
-
-export function dirnameByFileUrl(fileUrl) {
-  const __filename = fileURLToPath(fileUrl);
-  return path.dirname(__filename);
-}
+import { dirnameByFileUrl } from './dir.js'
 
 export async function makeSchemaForDomain(fileUrl) {
   const resolversArray = await loadFiles(path.join(dirnameByFileUrl(fileUrl), './resolvers'), { ignoreIndex: true })

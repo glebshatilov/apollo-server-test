@@ -6,6 +6,8 @@
     "target": "es2020",
     "module": "esnext",
     "moduleResolution": "node",
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true,
     "esModuleInterop": true,
     "types": ["node"]
   }
