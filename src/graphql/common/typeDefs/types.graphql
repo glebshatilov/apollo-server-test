@@ -1,0 +1,14 @@
+type Pagination {
+  count: Int!
+  skip: Int
+  limit: Int
+}
+
+input PaginationInput {
+  limit: Int!
+  skip: Int!
+}
+
+type Image {
+  src: String!
+}

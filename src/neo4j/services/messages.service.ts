@@ -1,4 +1,6 @@
 import { toNativeTypes } from '../utils.js'
+import { int } from 'neo4j-driver'
+import { PaginationInputInterface } from '../../@types/common.js'
 
 export default class Neo4jMessagesService {
 
@@ -66,18 +68,33 @@ export default class Neo4jMessagesService {
     }
   }
 
-  async getAllChatsByUserId(userId: string) {
+  async getAllChatsByUserId(userId: string, pagination?: PaginationInputInterface) {
     const session = this.driver.session()
 
     try {
       const res = await session.executeRead(tx => tx.run(
         `
         MATCH (:User { id: $userId })-[:IN_CHAT]->(c)
+        WITH c ORDER BY c.createdAt DESC
+        ${pagination ? 'SKIP $skip LIMIT $limit' : ''}
+
+        MATCH (u:User)-[:IN_CHAT]->(c)
+
+        WITH collect(u { .* }) AS participants, c
+
         RETURN c {
-          .*
+          .*,
+          labels: labels(c),
+          participants
         } AS chat
         `,
-        { userId }
+        {
+          userId,
+          ...(pagination && {
+            limit: int(pagination.limit),
+            skip: int(pagination.skip)
+          })
+        }
       ))
 
       const chats = res.records.map(
@@ -98,8 +115,12 @@ export default class Neo4jMessagesService {
     try {
       const res = await session.executeRead(tx => tx.run(
         `
-        MATCH (:User { id: $firstUserId })-[:IN_CHAT]->(c:DirectMessagesChat)<-[:IN_CHAT]-(:User { id: $secondUserId })
-        RETURN c { .* } AS chat
+        MATCH (u1:User { id: $firstUserId })-[:IN_CHAT]->(c:DirectMessagesChat)<-[:IN_CHAT]-(u2:User { id: $secondUserId })
+        RETURN c {
+          .*,
+          participants: [ u1 { .* }, u2 { .* }],
+          labels: labels(c)
+          } AS chat
         `,
         { firstUserId, secondUserId }
       ))

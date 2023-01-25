@@ -1,3 +1,13 @@
 type Query {
-  messages: [Message]!
+  messages: MessagesQueries!
+}
+
+type MessagesQueries {
+  all: [Message]!
+  allChats(
+    pagination: PaginationInput
+  ): ChatPagination!
+  chat(
+    userId: ID!
+  ): DirectMessagesChat
 }

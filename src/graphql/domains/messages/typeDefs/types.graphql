@@ -4,3 +4,41 @@ type Message {
   text: String!
   author: User!
 }
+
+type MessagePagination {
+  pagination: Pagination
+  data: [Message!]!
+}
+
+type ChatPagination {
+  pagination: Pagination
+  data: [Chat!]!
+}
+
+interface Chat {
+  id: ID!
+  messages(
+    pagination: PaginationInput
+  ): MessagePagination!
+  participants: [User!]!
+}
+
+type DirectMessagesChat implements Chat {
+  id: ID!
+  messages(
+    pagination: PaginationInput
+  ): MessagePagination!
+  participants: [User!]!
+  lastMessage: Message
+  interlocutor: User!
+}
+
+type GroupMessagesChat implements Chat {
+  id: ID!
+  participants: [User!]!
+  messages(
+    pagination: PaginationInput
+  ): MessagePagination!
+  name: String
+  avatar: Image
+}
