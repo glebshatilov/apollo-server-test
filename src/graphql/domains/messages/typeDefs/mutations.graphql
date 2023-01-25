@@ -1,0 +1,22 @@
+type Mutation {
+  messages: MessagesMutations
+}
+
+type MessagesMutations {
+  send(
+    text: String!
+    chatId: ID
+    # You can provide userId instead of chatId to send direct message to particular user.
+    userId: ID
+  ): MessagesMutationResponse!
+
+  delete(
+    messageId: ID!
+  ): MessagesMutationResponse!
+}
+
+type MessagesMutationResponse implements MutationResponse {
+  code: String!
+  success: Boolean!
+  message: String!
+}

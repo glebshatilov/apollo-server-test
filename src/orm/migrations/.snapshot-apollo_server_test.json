@@ -5,12 +5,12 @@
       "columns": {
         "id": {
           "name": "id",
-          "type": "varchar(255)",
-          "unsigned": false,
-          "autoincrement": false,
-          "primary": false,
+          "type": "int",
+          "unsigned": true,
+          "autoincrement": true,
+          "primary": true,
           "nullable": false,
-          "mappedType": "string"
+          "mappedType": "integer"
         },
         "created_at": {
           "name": "created_at",
@@ -34,6 +34,24 @@
         },
         "text": {
           "name": "text",
+          "type": "varchar(255)",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "mappedType": "string"
+        },
+        "chat_id": {
+          "name": "chat_id",
+          "type": "varchar(255)",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "mappedType": "string"
+        },
+        "author_id": {
+          "name": "author_id",
           "type": "varchar(255)",
           "unsigned": false,
           "autoincrement": false,

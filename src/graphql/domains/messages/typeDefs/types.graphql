@@ -2,4 +2,5 @@ type Message {
   id: ID!
   createdAt: DateTime!
   text: String!
+  author: User!
 }

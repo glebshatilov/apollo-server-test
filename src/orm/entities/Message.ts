@@ -3,7 +3,7 @@ import { Entity, Property, PrimaryKey } from '@mikro-orm/core'
 @Entity()
 export class Message {
   @PrimaryKey()
-  id!: string
+  id!: number
 
   @Property()
   createdAt: Date = new Date()
@@ -14,4 +14,9 @@ export class Message {
   @Property()
   text!: string
 
+  @Property()
+  chatId!: string
+
+  @Property()
+  authorId!: string
 }
