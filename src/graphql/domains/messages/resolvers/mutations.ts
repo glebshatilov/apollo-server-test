@@ -14,14 +14,12 @@ export default {
         if (userId) {
           let chat
 
-          chat = await neo4jMessagesService.getDirectMessagesChatByUserIds(authUser.id, userId)
-
-          if (!chat) {
-            chat = await neo4jMessagesService.createDirectMessagesChat(authUser.id, userId)
-          }
+          chat = await neo4jMessagesService.getOrCreateDirectMessagesChatByUserIds(authUser.id, userId)
 
           const message = em.create(Message, { text, chatId: chat.id, authorId: authUser.id })
           await em.persistAndFlush(message)
+
+          await neo4jMessagesService.updateChatLastMessageDate(chat.id)
 
           return {
             code: '200',
@@ -30,12 +28,14 @@ export default {
         }
 
         if (chatId) {
-          const isChatParticipant = await neo4jMessagesService.checkUserIsCharParticipant(chatId, authUser.id)
+          const isChatParticipant = await neo4jMessagesService.checkUserIsChatParticipant(chatId, authUser.id)
 
           if (!isChatParticipant) throw new MessagesNoPermissionError()
 
           const message = em.create(Message, { text, chatId, authorId: authUser.id })
           await em.persistAndFlush(message)
+
+          await neo4jMessagesService.updateChatLastMessageDate(chatId)
 
           return {
             code: '200',

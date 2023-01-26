@@ -32,7 +32,7 @@ export default {
 
         const neo4jMessagesService = new Neo4jMessagesService(neo4jDriver)
 
-        const chat = await neo4jMessagesService.getDirectMessagesChatByUserIds(authUser.id, userId)
+        const chat = await neo4jMessagesService.getOrCreateDirectMessagesChatByUserIds(authUser.id, userId)
 
         return chat
 
