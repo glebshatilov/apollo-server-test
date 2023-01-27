@@ -50,5 +50,12 @@ export default {
         data: messages
       }
     }
+  },
+  Message: {
+    author: async (parent) => {
+      return {
+        id: parent.authorId
+      }
+    }
   }
 }
