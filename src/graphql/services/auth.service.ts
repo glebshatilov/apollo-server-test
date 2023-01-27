@@ -53,7 +53,7 @@ export default class AuthService {
   }
 
   getUserDataByReq(req) {
-    const authorizationHeader = req.headers.authorization
+    const authorizationHeader = req.headers.authorization || req.headers?.get?.('authorization') // via get() for subscriptions logic
 
     if (!authorizationHeader) return null
 

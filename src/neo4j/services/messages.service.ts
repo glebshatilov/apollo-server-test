@@ -48,7 +48,11 @@ export default class Neo4jMessagesService {
         }
       ))
 
-      return res.records.length > 0
+      if (res.records.length === 0) {
+        return null
+      }
+
+      return res.records[0].get('chat')
     } catch (e) {
       console.error('e checkUserIsCharParticipant', e)
     } finally {

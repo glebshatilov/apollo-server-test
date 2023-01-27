@@ -21,6 +21,9 @@ interface Chat {
     pagination: PaginationInput
   ): MessagePagination!
   participants: [User!]!
+  lastMessage: Message
+  lastMessageAt: DateTime
+  createdAt: DateTime!
 }
 
 type DirectMessagesChat implements Chat {
@@ -30,6 +33,9 @@ type DirectMessagesChat implements Chat {
   ): MessagePagination!
   participants: [User!]!
   lastMessage: Message
+  lastMessageAt: DateTime
+  createdAt: DateTime!
+
   interlocutor: User!
 }
 
@@ -39,6 +45,10 @@ type GroupMessagesChat implements Chat {
   messages(
     pagination: PaginationInput
   ): MessagePagination!
+  lastMessage: Message
+  lastMessageAt: DateTime
+  createdAt: DateTime!
+
   name: String
   avatar: Image
 }

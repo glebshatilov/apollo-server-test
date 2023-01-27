@@ -28,6 +28,8 @@ export default {
       return null
     },
     lastMessage: async (parent, _, { em }) => {
+      if (parent.lastMessage) return parent.lastMessage // if we provided it from another resolver
+
       const message = await em.findOne(Message, { chatId: parent.id }, { orderBy: { createdAt: QueryOrder.DESC }})
 
       return message

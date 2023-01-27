@@ -6,7 +6,7 @@ import { Message } from '../../../../orm/entities/Message.js'
 export default {
   Mutation: {
     messages: async () => ({
-      send: async ({ text, chatId, userId }, { neo4jDriver, authUser, em }) => {
+      send: async ({ text, chatId, userId }, { neo4jDriver, authUser, em, pubsub }) => {
         if (!authUser?.id) throw new UnauthorizedError()
 
         const neo4jMessagesService = new Neo4jMessagesService(neo4jDriver)
@@ -19,7 +19,17 @@ export default {
           const message = em.create(Message, { text, chatId: chat.id, authorId: authUser.id })
           await em.persistAndFlush(message)
 
-          await neo4jMessagesService.updateChatLastMessageDate(chat.id)
+          const updatedChat = await neo4jMessagesService.updateChatLastMessageDate(chat.id)
+
+          pubsub.publish('NEW_MESSAGE_IN_CHAT',
+            {
+              newMessageInChat: {
+                ...chat,
+                ...updatedChat,
+                lastMessage: message
+              }
+            }
+          )
 
           return {
             code: '200',
