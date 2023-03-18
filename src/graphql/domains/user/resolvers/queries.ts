@@ -1,6 +1,6 @@
 import Neo4jUserService from '../../../../neo4j/services/user.service.js'
 import { UnauthorizedError } from '../../../errors/auth.error.js'
-import { UserIncorrectIdError } from '../../../errors/user.error.js'
+import { UserIncorrectIdError } from '../../../errors/user.errors.js'
 
 export default {
   Query: {

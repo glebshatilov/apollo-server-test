@@ -18,6 +18,8 @@ type UserMutations {
 
 input UserInfoDataInput {
   name: String
+  email: String
+  username: String
 }
 
 type UserMutationResponse implements MutationResponse {
