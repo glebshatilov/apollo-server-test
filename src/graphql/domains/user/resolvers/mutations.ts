@@ -1,6 +1,7 @@
 import Neo4jUserService from '../../../../neo4j/services/user.service.js'
 import { UnauthorizedError } from '../../../errors/auth.error.js'
 import { validateUserEmail, validateUserName, validateUserUsername } from '../../../utils/validation.js'
+import { UserUsernameUniqueViolationError, UserEmailUniqueViolationError } from '../../../errors/user.errors.js'
 
 export default {
   Mutation: {
@@ -13,14 +14,28 @@ export default {
         validateUserEmail(data.email)
         validateUserUsername(data.username)
 
-        const neo4jUserService = new Neo4jUserService(neo4jDriver)
+        try {
+          const neo4jUserService = new Neo4jUserService(neo4jDriver)
 
-        const user = await neo4jUserService.updateUserInfo(authUser.id, data)
+          const user = await neo4jUserService.updateUserInfo(authUser.id, data)
 
-        return {
-          code: '200',
-          success: true,
-          user
+          return {
+            code: '200',
+            success: true,
+            user
+          }
+        } catch (error) {
+          if (error.code === 'UNIQUE_VIOLATION') {
+            if (error.argumentName === 'email') {
+              throw new UserEmailUniqueViolationError()
+            }
+
+            if (error.argumentName === 'username') {
+              throw new UserUsernameUniqueViolationError()
+            }
+          }
+
+          throw error
         }
       },
       startFollowing: async ({ userId }, { neo4jDriver, authUser }) => {

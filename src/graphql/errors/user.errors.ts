@@ -43,3 +43,25 @@ export class UserUsernameLengthValidationError extends GraphQLError {
     })
   }
 }
+
+export class UserEmailUniqueViolationError extends GraphQLError {
+  constructor() {
+    super('This email is already in use.', {
+      extensions: {
+        code: 'BAD_USER_INPUT',
+        argumentName: 'email'
+      }
+    })
+  }
+}
+
+export class UserUsernameUniqueViolationError extends GraphQLError {
+  constructor() {
+    super('This username is already in use.', {
+      extensions: {
+        code: 'BAD_USER_INPUT',
+        argumentName: 'username'
+      }
+    })
+  }
+}

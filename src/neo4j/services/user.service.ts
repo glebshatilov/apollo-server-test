@@ -1,4 +1,5 @@
 import { toNativeTypes } from '../utils.js'
+import { Neo4jUserEmailUniqueViolationError, Neo4jUserUsernameUniqueViolationError } from '../errors/user.errors.js'
 
 export default class Neo4jUserService {
 
@@ -131,7 +132,17 @@ export default class Neo4jUserService {
 
       return res.records[0].get('user')
     } catch (e) {
-      console.log('error', e)
+      if (e.code === 'Neo.ClientError.Schema.ConstraintValidationFailed') {
+        if (e.message.includes('User_email_unique')) {
+          throw new Neo4jUserEmailUniqueViolationError()
+        }
+
+        if (e.message.includes('User_username_unique')) {
+          throw new Neo4jUserUsernameUniqueViolationError()
+        }
+
+        throw e
+      }
     } finally {
       await session.close()
     }
