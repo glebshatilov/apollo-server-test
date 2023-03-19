@@ -10,9 +10,9 @@ export default {
         if (!authUser?.id) throw new UnauthorizedError()
 
         // Validate input data
-        validateUserName(data.name)
-        validateUserEmail(data.email)
-        validateUserUsername(data.username)
+        if (data.name) validateUserName(data.name)
+        if (data.email) validateUserEmail(data.email)
+        if (data.username) validateUserUsername(data.username)
 
         try {
           const neo4jUserService = new Neo4jUserService(neo4jDriver)
