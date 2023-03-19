@@ -264,10 +264,9 @@ export default class Neo4jUserService {
     try {
       const res = await session.executeRead(tx => tx.run(
           `
-        MATCH (u:User)
-        RETURN u {
-          .*
-        } AS user
+          MATCH (u:User)
+          WHERE u.name IS NOT NULL
+          RETURN u { .* } AS user
       `
         )
       )
@@ -293,9 +292,9 @@ export default class Neo4jUserService {
         `
         WITH toLower($query) AS lowerCaseQuery
         MATCH (u:User)
-        WHERE u.username CONTAINS lowerCaseQuery
-          OR u.lowerCaseName CONTAINS lowerCaseQuery
-
+        WHERE (u.username CONTAINS lowerCaseQuery
+          OR u.lowerCaseName CONTAINS lowerCaseQuery)
+          AND u.name IS NOT NULL
         RETURN u { .* } AS user
         `,
         { query }
