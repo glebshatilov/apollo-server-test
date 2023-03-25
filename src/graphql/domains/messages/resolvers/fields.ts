@@ -1,6 +1,7 @@
 import { Message } from '../../../../orm/entities/Message.js'
 import { QueryOrder } from '@mikro-orm/core'
 import { UnauthorizedError } from '../../../errors/auth.error.js'
+import { mapUser } from '../../../utils/mappers.js'
 
 export default {
   Chat: {
@@ -21,7 +22,9 @@ export default {
       if (!authUser?.id) throw new UnauthorizedError()
 
       if (parent.participants) {
-        return parent.participants.find(user => user.id !== authUser.id) || null
+        const result = parent.participants.find(user => user.id !== authUser.id) || null
+
+        return mapUser(result)
       }
 
       // ToDo: add request to database

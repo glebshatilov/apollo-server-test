@@ -20,6 +20,7 @@ input UserInfoDataInput {
   name: String
   email: String
   username: String
+  avatar: String
 }
 
 type UserMutationResponse implements MutationResponse {

@@ -1,6 +1,7 @@
 import Neo4jUserService from '../../../../neo4j/services/user.service.js'
 import { UnauthorizedError } from '../../../errors/auth.error.js'
 import { UserIncorrectIdError } from '../../../errors/user.errors.js'
+import { mapUser, mapUsers } from '../../../utils/mappers.js'
 
 export default {
   Query: {
@@ -12,7 +13,7 @@ export default {
 
         if (!user) throw new UserIncorrectIdError()
 
-        return user
+        return mapUser(user)
       } else {
         if (!authUser?.id) throw new UnauthorizedError()
 
@@ -20,7 +21,7 @@ export default {
 
         if (!user) throw new UserIncorrectIdError()
 
-        return user
+        return mapUser(user)
       }
     },
     users: async (parent, args, { neo4jDriver }) => {
@@ -28,7 +29,7 @@ export default {
 
       const users = await neo4jUserService.getAll()
 
-      return users
+      return mapUsers(users)
     }
   }
 }

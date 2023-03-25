@@ -3,6 +3,7 @@ type User {
   email: String!
   name: String
   username: String
+  avatar: Image
   createdAt: DateTime!
   updatedAt: DateTime!
   articles: [Article!]!

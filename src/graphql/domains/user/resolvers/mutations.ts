@@ -2,6 +2,7 @@ import Neo4jUserService from '../../../../neo4j/services/user.service.js'
 import { UnauthorizedError } from '../../../errors/auth.error.js'
 import { validateUserEmail, validateUserName, validateUserUsername } from '../../../utils/validation.js'
 import { UserUsernameUniqueViolationError, UserEmailUniqueViolationError } from '../../../errors/user.errors.js'
+import { mapUser } from '../../../utils/mappers.js'
 
 export default {
   Mutation: {
@@ -22,7 +23,7 @@ export default {
           return {
             code: '200',
             success: true,
-            user
+            user: mapUser(user)
           }
         } catch (error) {
           if (error.code === 'UNIQUE_VIOLATION') {
@@ -48,7 +49,7 @@ export default {
         return {
           code: '200',
           success: true,
-          user
+          user: mapUser(user)
         }
       },
       stopFollowing: async ({ userId }, { neo4jDriver, authUser }) => {
@@ -61,7 +62,7 @@ export default {
         return {
           code: '200',
           success: true,
-          user
+          user: mapUser(user)
         }
       }
     })

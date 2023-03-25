@@ -1,5 +1,6 @@
 import Neo4jArticleService from '../../../../neo4j/services/article.service.js'
 import Neo4jUserService from '../../../../neo4j/services/user.service.js'
+import { mapUsers } from '../../../utils/mappers.js'
 
 export default {
   User: {
@@ -17,7 +18,7 @@ export default {
       const userId = parent.id
       const users = await neo4jUserService.getFollowingList(userId)
 
-      return users
+      return mapUsers(users)
     },
     followers: async (parent, args, { neo4jDriver }) => {
       const neo4jUserService = new Neo4jUserService(neo4jDriver)
@@ -25,7 +26,7 @@ export default {
       const userId = parent.id
       const users = await neo4jUserService.getFollowersList(userId)
 
-      return users
+      return mapUsers(users)
     },
   }
 }
