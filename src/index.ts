@@ -1,5 +1,5 @@
-import express from 'express'
-import http from 'http'
+import express, { Express } from 'express'
+import http, { Server } from 'http'
 import cors from 'cors'
 import bodyParser from 'body-parser'
 import { expressMiddleware } from '@apollo/server/express4'
@@ -7,8 +7,8 @@ import { createHandler } from 'graphql-sse/lib/use/express'
 
 import { apolloServer, schema, getDynamicContext } from './graphql/index.js'
 
-const app = express()
-const httpServer = http.createServer(app)
+const app: Express = express()
+const httpServer: Server = http.createServer(app)
 
 await apolloServer.start()
 
@@ -33,5 +33,5 @@ app.use(
 )
 
 httpServer.listen(4000, () => {
-  console.log(`🚀 Server ready at http://localhost:4000/`);
+  console.log(`🚀 Server ready at http://localhost:4000/`)
 })
