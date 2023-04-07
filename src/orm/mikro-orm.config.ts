@@ -1,6 +1,7 @@
 import { defineConfig } from '@mikro-orm/mysql'
 import path from 'path'
 import { dirnameByFileUrl } from '../utils/dir.js'
+import { MYSQL_HOST, MYSQL_PORT, MYSQL_USER, MYSQL_PASSWORD, MYSQL_DATABASE_NAME } from '../utils/variables.js'
 
 export default defineConfig({
   entities: ['./dist/orm/entities'], // path to our JS entities (dist), relative to `baseDir`
@@ -8,9 +9,11 @@ export default defineConfig({
   migrations: {
     path: path.join(dirnameByFileUrl(import.meta.url), './migrations'),
   },
-  dbName: 'apollo_server_test',
-  user: 'testuser',
-  password: 'testuser',
   type: 'mysql',
+  host: MYSQL_HOST,
+  port: Number(MYSQL_PORT),
+  user: MYSQL_USER,
+  password: MYSQL_PASSWORD,
+  dbName: MYSQL_DATABASE_NAME,
   debug: true,
 })
