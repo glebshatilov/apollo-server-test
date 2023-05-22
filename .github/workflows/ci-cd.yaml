@@ -70,4 +70,4 @@ jobs:
           script: |
             pm2 stop all
             pm2 delete all
-            pm2 start ${{ secrets.DEPLOY_SERVER_PROJECT_PATH }}/dist/index.js
+            pm2 start ${{ secrets.DEPLOY_SERVER_PROJECT_PATH }}/bundle/index.js
