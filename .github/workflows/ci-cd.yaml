@@ -26,12 +26,12 @@ jobs:
           cache: 'pnpm'
       - name: Install dependencies
         run: pnpm install
-      - run: pnpm run build
+      - run: pnpm run bundle
       - name: Archive production artifacts
         uses: actions/upload-artifact@v3
         with:
           name: dist
-          path: dist/
+          path: bundle/
 
   deploy:
     needs: build
@@ -48,7 +48,7 @@ jobs:
           host: ${{ secrets.DEPLOY_SERVER_HOST }}
           username: ${{ secrets.DEPLOY_SERVER_USERNAME }}
           password: ${{ secrets.DEPLOY_SERVER_PASSWORD }}
-          source: "dist/*"
+          source: "bundle/*"
           target: ${{ secrets.DEPLOY_SERVER_PROJECT_PATH }}
       - name: Restart Node.js Server
         uses: appleboy/ssh-action@master
