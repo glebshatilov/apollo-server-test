@@ -4,7 +4,7 @@ import { dirnameByFileUrl } from '../utils/dir.js'
 import { MYSQL_HOST, MYSQL_PORT, MYSQL_USER, MYSQL_PASSWORD, MYSQL_DATABASE_NAME } from '../utils/variables.js'
 
 export default defineConfig({
-  entities: ['./dist/orm/entities'], // path to our JS entities (dist), relative to `baseDir`
+  entities: ['./dist/orm/entities', './orm/entities'], // path to our JS entities, without `dist` for production
   entitiesTs: ['./src/orm/entities'], // path to our TS entities (src), relative to `baseDir`
   migrations: {
     path: path.join(dirnameByFileUrl(import.meta.url), './migrations'),
