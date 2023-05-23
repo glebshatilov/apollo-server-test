@@ -27,7 +27,7 @@ jobs:
       - name: Install dependencies
         run: pnpm install
       - name: Set up environment file
-        run: echo ${{ secrets.STAGE_ENV }} >> .env
+        run: echo "${{ secrets.STAGE_ENV }}" > .env
       - run: pnpm run bundle
       - name: Archive production artifacts
         uses: actions/upload-artifact@v3
