@@ -32,7 +32,7 @@ if (['full'].includes(LOGGING_REQUESTS)) {
 
 // GraphQL SSE for Subscriptions
 app.use(
-  '/graphql/stream',
+  '/graphql/stream/',
   cors(),
   createHandler({
     schema,
