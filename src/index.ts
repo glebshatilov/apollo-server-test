@@ -13,21 +13,8 @@ const httpServer: Server = http.createServer(app)
 
 await apolloServer.start()
 
-app.use(bodyParser.json())
-
-function logRequestBody(req: Request, res: Response, next: NextFunction) {
-  if (req.method === 'POST' && req.body) {
-    console.log('Body:', JSON.stringify(req.body, null, 2))
-  }
-  next()
-}
-
-if (['common', 'full'].includes(LOGGING_REQUESTS)) {
+if (['common'].includes(LOGGING_REQUESTS)) {
   app.use(morgan('dev'))
-}
-
-if (['full'].includes(LOGGING_REQUESTS)) {
-  app.use(logRequestBody)
 }
 
 // GraphQL SSE for Subscriptions
@@ -44,6 +31,7 @@ app.use(
 app.use(
   '/',
   cors(),
+  bodyParser.json(),
   expressMiddleware(apolloServer, {
     context: async ({ req }) => getDynamicContext(req)
   })
