@@ -27,7 +27,10 @@ export default class Neo4jArticleService {
         updatedAt: datetime()
         })-[:AUTHORED_BY]->(u)
 
-        RETURN a { .* } AS article
+        RETURN a {
+          .*,
+          author: u { .* }
+        } AS article
         `,
         { title, content, authorId }
       ))
@@ -93,7 +96,8 @@ export default class Neo4jArticleService {
           `
         MATCH (u:User { id: $authorId })<-[:AUTHORED_BY]-(a)
         RETURN a {
-          .*
+          .*,
+          author: u { .* }
         } AS article
       `,
         {
