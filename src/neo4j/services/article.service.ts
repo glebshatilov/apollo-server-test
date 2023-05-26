@@ -8,7 +8,7 @@ export default class Neo4jArticleService {
     this.driver = driver
   }
 
-  async add(title, text, authorId) {
+  async add(title, content, authorId) {
     const session = this.driver.session()
 
     try {
@@ -20,14 +20,14 @@ export default class Neo4jArticleService {
         MERGE (a:Article {
         id: randomUuid(),
         title: $title,
-        text: $text,
+        content: $content,
         createdAt: datetime(),
         updatedAt: datetime()
         })-[:AUTHORED_BY]->(u)
 
         RETURN a { .* } AS article
         `,
-        { title, text, authorId }
+        { title, content, authorId }
       ))
 
       if (res.records.length === 0) {

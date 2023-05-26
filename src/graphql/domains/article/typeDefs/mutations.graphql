@@ -5,12 +5,20 @@ type Mutation {
 type ArticleMutations {
   create(
     title: String!
-    text: String!
-  ): Article
+    content: String!
+  ): ArticleMutationResponse
   like(
     articleId: ID!
-  ): Article
+  ): ArticleMutationResponse
   removeLike(
     articleId: ID!
-  ): Article
+  ): ArticleMutationResponse
 }
+
+type ArticleMutationResponse implements MutationResponse {
+  code: String!
+  success: Boolean!
+  message: String!
+  article: Article
+}
+
