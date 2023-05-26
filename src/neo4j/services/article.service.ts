@@ -1,4 +1,6 @@
 import { toNativeTypes } from '../utils.js'
+import { PaginationInputInterface } from '../../@types/common.js'
+import { int } from 'neo4j-driver'
 
 export default class Neo4jArticleService {
 
@@ -39,6 +41,44 @@ export default class Neo4jArticleService {
       return toNativeTypes(article.get('article'))
     } catch (e) {
       console.log('ArticleServiceError', e)
+      throw e
+    } finally {
+      await session.close()
+    }
+  }
+
+  async getAll(pagination: PaginationInputInterface) {
+    const session = this.driver.session()
+
+    try {
+      const res = await session.executeRead(tx => tx.run(
+          `
+        MATCH (a:Article)-[:AUTHORED_BY]->(u)
+
+        WITH u, a ORDER BY a.createdAt DESC
+        ${pagination ? 'SKIP $skip LIMIT $limit' : ''}
+
+        RETURN a {
+          .*,
+          author: u { .* }
+        } AS article
+      `,
+          {
+            ...(pagination && {
+              limit: int(pagination.limit),
+              skip: int(pagination.skip)
+            })
+          }
+        )
+      )
+
+      const articles = res.records.map(
+        row => toNativeTypes(row.get('article'))
+      )
+
+      return articles
+    } catch (e) {
+      console.log('Articles.getAll.error', e)
       throw e
     } finally {
       await session.close()

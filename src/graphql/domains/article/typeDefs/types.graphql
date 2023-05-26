@@ -6,3 +6,8 @@ type Article {
   createdAt: DateTime!
   updatedAt: DateTime!
 }
+
+type ArticlePagination {
+  pagination: Pagination
+  data: [Article!]!
+}
