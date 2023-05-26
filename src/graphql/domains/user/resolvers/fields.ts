@@ -1,6 +1,6 @@
 import Neo4jArticleService from '../../../../neo4j/services/article.service.js'
 import Neo4jUserService from '../../../../neo4j/services/user.service.js'
-import { mapUsers } from '../../../utils/mappers.js'
+import { mapUsers, mapUser } from '../../../utils/mappers.js'
 
 export default {
   User: {
@@ -9,6 +9,9 @@ export default {
 
       const authorId = parent.id
       const articles = await neo4jArticleService.getAllByAuthor(authorId)
+
+      // mapping for authors
+      articles.forEach(article => article.author = mapUser(article.author))
 
       return articles
     },
