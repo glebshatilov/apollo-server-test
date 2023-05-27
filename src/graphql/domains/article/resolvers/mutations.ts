@@ -1,5 +1,6 @@
 import Neo4jArticleService from '../../../../neo4j/services/article.service.js'
 import { UnauthorizedError } from '../../../errors/auth.error.js'
+import { mapUser } from '../../../utils/mappers.js'
 
 export default {
   Mutation: {
@@ -10,6 +11,8 @@ export default {
         const neo4jArticleService = new Neo4jArticleService(neo4jDriver)
 
         const article = await neo4jArticleService.add(title, content, authUser.id)
+
+        if (article.author) article.author = mapUser(article.author)
 
         return {
           code: '200',

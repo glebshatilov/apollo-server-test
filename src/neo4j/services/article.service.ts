@@ -50,6 +50,34 @@ export default class Neo4jArticleService {
     }
   }
 
+  async getArticleById(id: string) {
+    const session = this.driver.session()
+
+    try {
+      const res = await session.executeRead(tx => tx.run(
+        `
+        MATCH (a:Article { id: $id })-[:AUTHORED_BY]->(u)
+
+        RETURN a {
+          .*,
+          author: u { .* }
+        } AS article
+        `,
+        { id }
+      ))
+
+      if (res.records.length === 0) {
+        return null
+      }
+
+      return toNativeTypes(res.records[0].get('article'))
+    } catch (e) {
+
+    } finally {
+      await session.close()
+    }
+  }
+
   async getAll(pagination: PaginationInputInterface) {
     const session = this.driver.session()
 
